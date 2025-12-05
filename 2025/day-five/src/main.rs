@@ -18,9 +18,11 @@ fn main() {
         }
     }
 
+    let res = merge(ranges);
     //first part
+    
     // for id in ids_to_check {
-    //     for &(start, end) in &ranges {
+    //     for &(start, end) in &res {
     //         if id >= start && id <= end {
     //             fresh_item += 1;
     //             break;
@@ -29,7 +31,6 @@ fn main() {
     // }
 
     //second part
-    let res = merge(ranges);
     for &(start, end) in &res {
         fresh_item += (end - start) + 1;
     }
