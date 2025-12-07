@@ -1,0 +1,18 @@
+123 328  51 64 
+ 45 64  387 23 
+  6 98  215 314
+*   +   *   + 
+
+
+string 123 -> char 1 2 3 
+string 45  -> char   4 5
+string 6 -> char       6
+
+what I need from above 1, 24, 356
+
+
+string 51 -> char    5 1
+string 387 -> char 3 8 7
+string 215 -> char 2 1 5
+
+
