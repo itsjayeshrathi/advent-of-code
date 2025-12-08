@@ -1,7 +1,7 @@
 use std::{collections::HashSet, fs};
 
 fn main() {
-    let data = fs::read_to_string("file.txt").unwrap();
+    let data = fs::read_to_string("file.test.txt").unwrap();
     let mut tachyon_manifold: Vec<Vec<char>> = Vec::new();
 
     for raw in data.lines() {
@@ -12,13 +12,12 @@ fn main() {
         let line: Vec<char> = line.chars().collect();
         tachyon_manifold.push(line);
     }
-    println!("{:?}", tachyon_manifold);
-    let split_count = get_tachyons_split(tachyon_manifold);
+    let split_count: u64 = get_quantum_tachyons_split(tachyon_manifold);
     println!("{}", split_count);
 }
 
 // first problem
-fn get_tachyons_split(tachyon_manifold: Vec<Vec<char>>) -> u32 {
+fn _get_tachyons_split(tachyon_manifold: Vec<Vec<char>>) -> u32 {
     let mut beam_tracker = HashSet::new();
     let mut split_count = 0;
 
@@ -51,6 +50,61 @@ fn get_tachyons_split(tachyon_manifold: Vec<Vec<char>>) -> u32 {
     split_count
 }
 
-fn _get_quantum_split(tachyon_manifold: Vec<Vec<char>>) -> u32 {
-    0
+// second problem
+fn get_quantum_tachyons_split(grid: Vec<Vec<char>>) -> u64 {
+    let rows = grid.len() as isize;
+    let cols = grid[0].len() as isize;
+
+    // dp[r][c] = number of ways beam at (r,c) reaches bottom
+    let mut dp = vec![vec![None; cols as usize]; rows as usize];
+
+    fn dfs(
+        r: isize,
+        c: isize,
+        g: &Vec<Vec<char>>,
+        rows: isize,
+        cols: isize,
+        dp: &mut Vec<Vec<Option<u64>>>,
+    ) -> u64 {
+        // Out of bounds
+        if c < 0 || c >= cols {
+            return 0;
+        }
+
+        // Reached last row
+        if r == rows - 1 {
+            return 1;
+        }
+
+        // Memoized?
+        if let Some(val) = dp[r as usize][c as usize] {
+            return val;
+        }
+
+        let cell = g[r as usize][c as usize];
+
+        let ways = match cell {
+            '^' => {
+                // split
+                dfs(r + 1, c - 1, g, rows, cols, dp) + dfs(r + 1, c + 1, g, rows, cols, dp)
+            }
+            _ => {
+                // straight
+                dfs(r + 1, c, g, rows, cols, dp)
+            }
+        };
+
+        dp[r as usize][c as usize] = Some(ways);
+        ways
+    }
+
+    // Possible S positions on first row
+    let mut total = 0;
+    for (c, &ch) in grid[0].iter().enumerate() {
+        if ch == 'S' {
+            total += dfs(0, c as isize, &grid, rows, cols, &mut dp);
+        }
+    }
+
+    total
 }
